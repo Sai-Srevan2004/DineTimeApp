@@ -18,21 +18,21 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 //   import { useEffect } from "react";
-import {useRouter} from 'expo-router'
+import { useRouter } from 'expo-router'
 // import uploadData from '../../config/bulkupload'
 
 
 export default function Home() {
-  const router=useRouter()
+  const router = useRouter()
 
   //  useEffect(()=>{
   //     uploadData()
   //  },[])
-  const [restaurants,setRestaurants]=useState([])
+  const [restaurants, setRestaurants] = useState([])
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-    onPress={()=>router.push(`/restaurant/${item.name}`)}
+      onPress={() => router.push(`/restaurant/${item.name}`)}
       className="bg-[#5f5f5f] max-h-64 max-w-xs flex justify-center rounded-lg p-4 mx-4 shadow-md"
     >
       <Image
@@ -48,18 +48,21 @@ export default function Home() {
     </TouchableOpacity>
   );
 
-  const getRestaurants=async()=>{
-    const q=query(collection(db,"restaurants"))
-    const res=await getDocs(q)
-
-    res.forEach((item)=>{
-      setRestaurants((prev)=>[...prev,item.data()])
-    })
+  const getRestaurants = async () => {
+    try {
+      const q = query(collection(db, "restaurants"))
+      const res = await getDocs(q)
+      res.forEach((item) => {
+        setRestaurants((prev) => [...prev, item.data()])
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     getRestaurants()
-  },[])
+  }, [])
 
   return (
     <SafeAreaView
